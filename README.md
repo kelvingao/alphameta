@@ -1,4 +1,8 @@
-# AlphaMeta Releases
+# AlphaMeta
+
+![Downloads](https://img.shields.io/github/downloads/kelvingao/alphameta/total?style=flat-square)
+
+AlphaMeta is an LLM-friendly IBKR (Interactive Brokers) trading tool providing real-time market data for stocks, options, futures, and crypto via a standardized REST API.
 
 ## Get started
 
