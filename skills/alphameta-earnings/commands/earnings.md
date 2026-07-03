@@ -1,5 +1,5 @@
 ---
-description: Generate an institutional-grade post-earnings update report (DOCX) and conversation summary for a stock
+description: Post-earnings analysis — fast in-chat summary card (default) or full Markdown research report (on request). Covers beat/miss, segments, margins, guidance, valuation.
 argument-hint: "<SYMBOL> e.g. AAPL NVDA TSLA"
 ---
 

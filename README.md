@@ -61,7 +61,7 @@ Ask your AI assistant naturally (supports 中文 / English):
 | **Watchlist** | [`alphameta-watchlist`](skills/alphameta-watchlist/SKILL.md) — Named symbol groups, add/remove symbols, local persistence |
 | **Utilities** | [`alphameta-utilities`](skills/alphameta-utilities/SKILL.md) — Calculator, calendar, TTS, paper trading, market strength reporter |
 | **Market Intelligence** | [`alphameta-intelligence`](skills/alphameta-intelligence/SKILL.md) — Screener, top movers, morning brief, sector rotation, anomalies |
-| **Earnings** | [`alphameta-earnings`](skills/alphameta-earnings/SKILL.md) — Post-earnings analysis, beat/miss, segment breakdown, DOCX report |
+| **Earnings** | [`alphameta-earnings`](skills/alphameta-earnings/SKILL.md) — Pre & post-earnings analysis: Lite in-chat summary card (default) or full Markdown research report with valuation. DOCX report optional |
 
 ---
 

@@ -300,13 +300,14 @@ class DocxBuilder:
     def __init__(self, symbol: str, company: str, report_date: str,
                  analysis_date: str, price: str, market_cap: str,
                  valuation: str, rating: str, output_path: str,
-                 lang: str = "en", latin: str = DEFAULT_LATIN, cjk: str = DEFAULT_CJK):
+                 lang: str = "en", latin: str = DEFAULT_LATIN, cjk: str = DEFAULT_CJK,
+                 subtitle: str = "Earnings Update"):
         self.symbol = symbol; self.company = company
         self.report_date = report_date; self.analysis_date = analysis_date
         self.price = price; self.market_cap = market_cap
         self.valuation = valuation; self.rating = rating
         self.output_path = output_path; self.lang = lang
-        self.latin = latin; self.cjk = cjk
+        self.latin = latin; self.cjk = cjk; self.subtitle = subtitle
         self.doc = Document()
         sec = self.doc.sections[0]
         sec.top_margin = Inches(1); sec.bottom_margin = Inches(1)
@@ -326,7 +327,7 @@ class DocxBuilder:
         p.paragraph_format.space_before = Pt(48)
         self._run(p, f"{self.company}（{self.symbol}）", bold=True, size=22, color=BLUE)
         p2 = self.doc.add_paragraph(); p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        self._run(p2, "Earnings Update", bold=True, size=16)
+        self._run(p2, self.subtitle, bold=True, size=16)
         self.doc.add_paragraph()
         p3 = self.doc.add_paragraph(); p3.alignment = WD_ALIGN_PARAGRAPH.CENTER
         self._run(p3, f"Analysis: {self.analysis_date}  |  Report: {self.report_date}", size=11, color=GREY_RGB)

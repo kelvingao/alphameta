@@ -1,6 +1,10 @@
-# Report Structure and Templates
+# Report Structure and Templates (DOCX Upgrade Path)
+
+> **When to use**: Only when the user explicitly requests a DOCX report. The default Full mode output is Markdown (see [full-report.md](full-report.md)). This reference provides the page-by-page structure for generating an 8-12 page institutional DOCX via `scripts/generate_report.py`.
 
 This document provides complete page-by-page templates and formatting requirements for the earnings update DOCX report.
+
+> **Data source**: All structured data comes from the `collect.py --full` RAW_DIR JSON files (`income_stmt.json`, `consensus.json`, `earnings.json`, `calc_index.json`, `kline.json`, `quote.json`, `segment.json`, `balance_sheet.json`, `cash_flow.json`). Read them directly with `json.load(open(f'{RAW_DIR}/{file}'))`. Do not re-call CLI commands for data already collected.
 
 ## Contents
 
@@ -32,7 +36,7 @@ This document provides complete page-by-page templates and formatting requiremen
 [COMPANY NAME] ([TICKER])
 [QUARTER] [YEAR] EARNINGS UPDATE
 
-[EARNINGS_RELEASE_DATE]   ← MUST use `filing <symbol>` to get the 10-Q/10-K or 8-K filing date
+[EARNINGS_RELEASE_DATE]   ← from RAW_DIR/filings.json (collect.py --full)
 
 Rating: [MAINTAIN/RAISE/LOWER] [RATING]
 Price (as of [date]): $XX.XX
@@ -233,11 +237,11 @@ results impact this specific thesis element.]
 
 ### Updated Valuation (1-2 pages)
 
-**IMPORTANT: Use actual calculations with real data from AlphaMeta CLI — NOT placeholder templates.**
+**IMPORTANT: All data comes from RAW_DIR JSON files (collected by `collect.py --full`). Read from files directly — do not re-call CLI commands.**
 
-Use `query=calc-index --help`, `query=consensus --help`, `query=kline --help`, and `query=filing --help` to fetch market and financial data for subject and peer companies.
+See [valuation-methodologies.md](valuation-methodologies.md) for complete calculation details, formulas, and pitfalls.
 
-**See [valuation-methodologies.md](valuation-methodologies.md) for complete calculation details, formulas, and pitfalls.**
+**Peer data**: For trading comps, call `consensus <symbol>` for each peer individually (discover via `/api/v1/search`). Subject data is already in RAW_DIR.
 
 **Method 1: DCF Analysis (weight 40-60%)**
 
@@ -249,9 +253,7 @@ Select 5-10 peers → calculate EV/EBITDA, P/E, EV/Revenue → use median → ap
 
 **Method 3: Precedent Transactions (weight 0-25%, only if M&A data available)**
 
-AlphaMeta CLI does not provide M&A data. Use web search for recent industry transactions (last 3-5 years). Calculate transaction EV/EBITDA and control premiums. Only include this method when relevant transactions exist.
-
-If no precedent data available, redistribute weight to DCF and Comps.
+Web search for recent industry transactions (last 3-5 years). Calculate transaction EV/EBITDA and control premiums. Only include this method when relevant transactions exist. If no data available, redistribute weight to DCF and Comps.
 
 ### Dynamic Weighting
 
@@ -282,7 +284,7 @@ Weighted Average          $XXX         $XXX         $XXX
 
 Price Target: $XXX (Base Case weighted average)
 Prior Target: $XXX
-Current Price: $XXX (from alphameta quote)
+Current Price: $XXX (from RAW_DIR/quote.json)
 Implied Upside: +XX%
 ```
 
@@ -385,6 +387,25 @@ Source: [Firm Name] estimates
 - "Source: [Source]" line below
 - Professional styling
 
+### ChartBuilder Function Reference
+
+| Page | Chart | Purpose | ChartBuilder Function | Data from RAW_DIR |
+|------|-------|---------|----------------------|-------------------|
+| 2-3 | Chart 1 | Quarterly revenue bars | `cb.quarterly_bar(title, quarters, values, ylabel="$B")` | `income_stmt.json` → IS.metrics.Revenue |
+| 2-3 | Chart 2 | Quarterly EPS bars | `cb.quarterly_bar(title, quarters, values, est_idx, "$")` | `income_stmt.json` → IS.metrics (EPS Basic/Diluted) |
+| 2-3 | Chart 3 | Margin trend lines | `cb.growth_lines(title, quarters, series, ylabel="%")` | `income_stmt.json` → compute margin% |
+| 4-5 | Chart 4 | Key metrics trends | `cb.growth_lines(title, quarters, series)` | various |
+| 4-5 | Chart 5 | Guidance vs Street | `cb.grouped_bar(title, categories, series)` | `earnings.json` + `consensus.json` |
+| 4-5 | Chart 6 | Revenue by segment/geo | `cb.grouped_bar(title, segments, series)` | `segment.json` → segments |
+| 6-7 | Chart 7 | Valuation vs historical | `cb.price_action(title, dates, prices, px, ...)` | `kline.json` + `calc_index.json` |
+| 6-7 | Chart 8 | Estimate revision | `cb.grouped_bar(title, cats, series)` | `consensus.json` eps_estimates |
+| 8-10 | Chart 9 | P/E or EV/EBITDA bands | `cb.analyst_pt_hbar(title, current, ...)` | `calc_index.json` + `consensus.json` |
+| 8-10 | Chart 10 | Price target walk | `cb.scenario_hbar(title, scenarios, values, px, ...)` | `consensus.json` price_target |
+| 11-12 | Chart 11 | Peer comparison | `cb.peer_multiples(title, title, peers, vals, vals, ...)` | consensus.json (supplement with peer CLI calls) |
+| 11-12 | Chart 12 | Additional context charts | Appropriate function from above | appropriate source |
+
+> **Parameters by function**: `quarterly_bar(title, quarters, values, estimate_idx=-1, ylabel="Revenue")` · `growth_lines(title, quarters, series, ylabel="%")` where series is `[{"label":"...", "values":[...], "color":"#hex"}, ...]` · `grouped_bar(title, categories, series, ylabel="")` · `price_action(title, dates, prices, current, current_label, target, target_label)` · `scenario_hbar(title, ["Bear","Base","Bull"], values, current, current_label)`
+
 ### 4. Year Notation
 - Use A for actual (Q3'24A)
 - Use E for estimate (Q4'24E)
@@ -426,8 +447,8 @@ Management raised FY2024 revenue guidance to $9.8-10.0B from prior $9.5-9.7B²
 ```
 Enterprise customers grew 23% YoY to 845, with net revenue retention at 128%³
 
-³ Q3 2024 10-Q, page 23
-  [Hyperlink "10-Q" to filing URL from `alphameta filing`]
+ ³ Q3 2024 10-Q, page 23
+  [Hyperlink "10-Q" to filing URL from RAW_DIR/filings.json]
   Q3 2024 Investor Presentation slide 8
   [Hyperlink "Investor Presentation" to PDF]
 ```

@@ -1,18 +1,17 @@
 # Valuation Methodologies for Earnings Updates
 
-Reference guide for the three valuation methods used in earnings update reports. All data sourced via AlphaMeta CLI.
+Reference guide for the three valuation methods used in earnings update reports. In Full Report mode, all valuation data comes from the `collect.py` digest and `RAW_DIR` raw files.
 
 ---
 
 ## 1. Discounted Cash Flow (DCF) Analysis
 
-### Data Sources (AlphaMeta CLI)
+### Data Sources
 
-- `query=filing` then `filing <symbol>` — access 10-K/10-Q for historical financials (revenue, EBIT, D&A, CapEx, debt, cash)
-- `query=financial-report` then `financial-report <symbol> BS/CF` — balance sheet (debt, cash, shares) and cash flow (FCF)
-- `query=calc-index` then `calc-index <symbol>` — valuation metrics (P/E, P/B, market cap)
-- `query=consensus` then `consensus <symbol>` — EPS TTM, beta, consensus estimates
-- `query=kline` then `kline <symbol>` — price history for beta calculation
+All data from `collect.py --full` digest + RAW_DIR files:
+- Digest provides historical financials (revenue, EBIT, D&A, CapEx, debt, cash), balance sheet (shares, net debt), consensus estimates (EPS, beta), and valuation metrics (P/E, P/B, market cap)
+- RAW_DIR contains price history for beta calculation (kline data)
+- Individual CLI calls still available for supplemental data as needed
 
 ### 8-Step DCF Process
 
@@ -63,7 +62,7 @@ TV = EBITDA(final year) × Exit Multiple
 ```
 Cost of Equity = Risk-Free Rate + Beta × Equity Risk Premium
   - Risk-Free Rate: 10Y Treasury yield (~4.2%)
-  - Beta: regress daily returns from 250-day kline vs market index (SPX for .US, HSI for .HK)
+  - Beta: regress daily returns from 250-day kline vs market index (SPX for US stocks)
   - ERP: 5.0-6.0%
 
 Cost of Debt = (Interest Expense ÷ Total Debt) × (1 - Tax Rate)
@@ -117,10 +116,11 @@ WACC      2.0%    2.5%    3.0%
 
 ## 2. Trading Comparables Analysis
 
-### Data Sources (AlphaMeta CLI)
+### Data Sources
 
-- `query=calc-index` then `calc-index <symbol>` — valuation metrics for subject and peers (P/E, P/B, market cap)
-- `query=consensus` then `consensus <symbol>` — EPS TTM, beta for subject and peers
+- Subject data from collect.py digest (EPS, market cap, multiples)
+- Peer data from `consensus <symbol>` (discover peers via search)
+- Individual CLI calls still available for supplemental data as needed
 
 ### 6-Step Comps Process
 
