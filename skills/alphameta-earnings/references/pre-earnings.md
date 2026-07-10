@@ -43,7 +43,7 @@ The collect.py digest provides these sections in compact JSON (3-4K tokens):
 | Kline / Price      | `kline <symbol> day 250`          | Price context, support/resistance  |
 | Quote              | `quote <symbol>`                  | Current market price               |
 | News               | `news <symbol>`                   | Recent events                      |
-| Segment Data       | `sec <symbol>`                    | Revenue breakdown by segment       |
+| Segment Data       | `financial-report <symbol> SEG`   | Revenue breakdown by segment       |
 
 Run `python3 scripts/collect.py --help` for full options.
 

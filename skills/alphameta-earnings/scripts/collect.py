@@ -16,6 +16,7 @@ Dependencies: Python stdlib only (urllib, json, threading, concurrent.futures,
 
 import json
 import os
+import re
 import sys
 import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -28,7 +29,7 @@ from urllib.error import URLError, HTTPError
 ALPHAMETA_BASE = os.environ.get("ALPHAMETA_URL", "http://localhost:18080")
 EXECUTE_URL = "{}/api/v1/execute".format(ALPHAMETA_BASE)
 HEALTH_URL = "{}/api/v1/health".format(ALPHAMETA_BASE)
-TIMEOUT = 30
+TIMEOUT = 120
 CST_TZ = timezone(timedelta(hours=8))
 
 
@@ -307,27 +308,128 @@ def trim_operating(data):
     return slim(trimmed) if trimmed else slim(data)
 
 
-def trim_sec(data):
-    """Extract segment revenue data from single-period SEC response."""
+def trim_segment(data):
+    """Extract segment breakdown with YoY comparison. Auto-detects SEG format."""
     if not data:
         return None
     segments = data.get("segments")
+    periods = data.get("periods", [])
     if not segments:
         return None
-    # segments is {"revenue": {"ProductA": {"values": {...}}, "ProductB": ...}}
-    rev = segments.get("revenue") or segments.get("Revenue")
-    if not rev:
-        return slim(segments)
-    # Keep only the latest period's values
+
+    if _is_grouped(segments):
+        return _seg_grouped(segments, periods)
+    return _seg_flat(segments, periods)
+
+
+def _is_grouped(segments):
+    return any(
+        isinstance(v, dict) and any(isinstance(sv, dict) for sv in v.values())
+        for v in segments.values()
+    )
+
+
+def _sorted_keys(periods):
+    def _key(p):
+        try:
+            y, q = str(p).split("Q")
+            return (-int(y), -int(q))
+        except (ValueError, TypeError, IndexError, AttributeError):
+            return (0, 0)
+    return sorted(periods, key=_key)
+
+
+def _prior_period(key):
+    try:
+        y, q = str(key).split("Q")
+        return f"{int(y) - 1}Q{q}"
+    except (ValueError, IndexError):
+        return None
+
+
+def _seg_grouped(segments, periods):
+    sorted_p = _sorted_keys(periods)
     result = {}
-    for name, info in rev.items():
-        vals = info.get("values", {}) if isinstance(info, dict) else {}
-        if vals:
-            # Get the most recent period value
-            periods = sorted(vals.keys(), reverse=True)
-            if periods:
-                result[name] = {"latest": vals[periods[0]], "period": periods[0]}
+    for group, items in segments.items():
+        if not isinstance(items, dict):
+            continue
+        # Determine latest period available in this group
+        # (different groups may have different period coverage)
+        group_periods = set()
+        for v in items.values():
+            if isinstance(v, dict):
+                group_periods.update(v.keys())
+        latest = next((p for p in sorted_p if p in group_periods), None)
+        if latest is None:
+            continue
+        prior = _prior_period(latest) if len(sorted_p) >= 2 else None
+
+        trimmed = {}
+        for name, vals in items.items():
+            if not isinstance(vals, dict):
+                continue
+            entry = {}
+            cv = vals.get(latest)
+            if cv is not None:
+                entry["latest_q"] = cv
+            if prior:
+                pv = vals.get(prior)
+                if cv is not None and pv is not None and pv != 0:
+                    entry["q_yoy_pct"] = round((cv - pv) / pv * 100, 1)
+            if entry:
+                trimmed[name] = entry
+        if trimmed:
+            result[group] = trimmed
+
     return slim(result) if result else slim(segments)
+
+
+def _seg_flat(segments, periods):
+    q_labels = sorted((p for p in periods if "(Q" in p), reverse=True)
+    ytd_labels = sorted((p for p in periods if "YTD" in p), reverse=True)
+    cur_q, pri_q = _find_prior_period(q_labels)
+    cur_y, pri_y = _find_prior_period(ytd_labels)
+
+    result = {}
+    for name, info in segments.items():
+        vals = info.get("values", {}) if isinstance(info, dict) else {}
+        if not vals:
+            continue
+        entry = {}
+        if cur_q:
+            cv = vals.get(cur_q)
+            if cv is not None:
+                entry["latest_q"] = cv
+            if pri_q:
+                pv = vals.get(pri_q)
+                if cv is not None and pv is not None and pv != 0:
+                    entry["q_yoy_pct"] = round((cv - pv) / pv * 100, 1)
+        if cur_y:
+            cv = vals.get(cur_y)
+            if cv is not None:
+                entry["latest_ytd"] = cv
+            if pri_y:
+                pv = vals.get(pri_y)
+                if cv is not None and pv is not None and pv != 0:
+                    entry["ytd_yoy_pct"] = round((cv - pv) / pv * 100, 1)
+        if entry:
+            result[name] = entry
+
+    return slim(result) if result else slim(segments)
+
+
+def _find_prior_period(labels):
+    """Return (current, prior_year) pair by matching quarter label."""
+    if not labels:
+        return None, None
+    cur = labels[0]
+    m = re.search(r'\(Q[1-4]\)', cur)
+    if m and len(labels) > 1:
+        label = m.group()
+        for p in labels[1:]:
+            if label in p:
+                return cur, p
+    return cur, labels[1] if len(labels) > 1 else None
 
 
 def trim_earnings(data):
@@ -393,10 +495,10 @@ JOB_DEFS = [
      "news {symbol}",
      "News (latest 10)",
      trim_news),
-     ("segment",
-      "sec {symbol}",
-      "Segment / Revenue Breakdown",
-      trim_sec),
+      ("segment",
+       "financial-report {symbol} SEG p8",
+       "Segment Breakdown",
+       trim_segment),
 ]
 
 FULL_JOBS = [
