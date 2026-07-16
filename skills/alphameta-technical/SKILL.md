@@ -1,7 +1,7 @@
 ---
 name: alphameta-technical
 description: |
-  Options technical indicators via AlphaMeta — Greeks (delta, gamma, vega, theta, rho), implied/experienced volatility (IV/HV), max pain, gamma exposure (GEX), margin requirements, and leverage ratio. Use when: "Greeks", "delta", "gamma", "vega", "theta", "隐含波动率", "IV", "历史波动率", "HV", "max pain", "gamma exposure", "保证金", "margin", "杠杆率", "leverage", "portfolio margin".
+  Price technical indicators via AlphaMeta — MACD, RSI, KDJ, Bollinger Bands, EMA crossover, ADX, ATR, OBV computed from OHLCV kline data. Use when: "MACD", "RSI", "KDJ", "布林带", "布林", "ADX", "ATR", "OBV", "技术指标", "金叉", "死叉", "超买", "超卖".
 ---
 
 # AlphaMeta Technical
@@ -10,63 +10,79 @@ description: |
 
 See the [alphameta](../alphameta) skill for server setup and command execution syntax.
 
-## Command Index
+---
 
-| Category | Commands | Use For |
+## Workflow
+
+When the user asks for technical analysis on a symbol:
+
+1. **Fetch 252 daily kline data** and save to a temp file
+2. **Compute 8 indicators** via inline Python + pandas
+3. **Present results** — composite buy/sell/neutral signal with indicator details
+
+### Step 1: Fetch kline
+
+```bash
+curl -X POST "http://127.0.0.1:18080/api/v1/execute" \
+  -H "Content-Type: application/json" \
+  -d '{"cmd": "kline <SYMBOL> day 252"}' \
+  > /tmp/<SYMBOL>_kline.json
+```
+
+Reuse the saved file on subsequent calls. Only re-fetch if the user requests a different symbol, timeframe, or explicitly asks for fresh data.
+
+### Step 2: Compute indicators
+
+Run the inline Python script from [references/technical.md](references/technical.md) against the saved kline data. The script computes 8 indicators, votes each ±1/0, and outputs a JSON result.
+
+### Step 3: Format output
+
+| Indicator | Value | Signal |
 |---|---|---|
-| [Technical Indicators](references/ref-indicators.md) | `maxpain`, `gex` | Max pain, gamma exposure |
-| [Utilities](references/ref-utilities.md) | `details`, `info` | Contract metadata with Greeks |
+| MACD | hist value | Bullish/Neutral/Bearish |
+| RSI(14) | numeric | Oversold/Neutral/Overbought |
+| KDJ | numeric | Oversold/Neutral/Overbought |
+| Bollinger | price position | Oversold/Neutral/Overbought |
+| EMA 50/200 | alignment | Bullish/Bearish |
+| ADX(14) | numeric | Trending/Choppy |
+| ATR(14) | numeric | Expanding/Normal/Contracting |
+| OBV | numeric | Inflow/Outflow |
+| **Composite** | total: N | **Buy/Sell/Neutral** |
 
-## Key Concepts
+Always cite the data source: AlphaMeta / Interactive Brokers.
 
-### Greeks (from `info` / `details`)
+---
 
-| Greek | Meaning |
+## Indicator Reference
+
+| Indicator | Parameters | Bullish Signal | Bearish Signal |
+|---|---|---|---|
+| MACD | (12, 26, 9) | Histogram rising & positive | Histogram falling & negative |
+| RSI | 14 | < 30 (oversold) | > 70 (overbought) |
+| KDJ | (9, 3, 3) | J < 20 | J > 80 |
+| Bollinger | (20, 2) | Price < lower band | Price > upper band |
+| EMA cross | 50 / 200 | 50 above 200 (golden cross) | 50 below 200 (death cross) |
+| ADX | 14 | ADX > 25 & DI+ > DI- | ADX > 25 & DI- > DI+ |
+| ATR | 14 | Expanding (>1.1× SMA) | Contracting (<0.9× SMA) |
+| OBV | 5-day | OBV rising | OBV falling |
+
+- 7 directional indicators vote +1 / 0 / -1; ATR (vote=0) provides non-directional volatility context
+- Composite: ≥ +3 → Buy, ≤ -3 → Sell, otherwise → Neutral
+
+---
+
+## Error Handling
+
+| Situation | Response |
 |---|---|
-| `Delta` | Price sensitivity (1 = stock equivalent) |
-| `Gamma` | Delta change rate |
-| `Vega` | IV sensitivity (per 1% IV change) |
-| `Theta` | Time decay (per day) |
-| `Rho` | Interest rate sensitivity |
+| `error.code == "COMMAND_ERROR"` | Surface `error.message` verbatim |
+| File `/tmp/<SYMBOL>_kline.json` not found | Re-run step 1 to fetch the data first |
+| No data returned | Symbol may not support historical data; try a different symbol |
+| Insufficient history (< 60 bars) | Request more periods with `kline <SYMBOL> day 500` |
+| `ModuleNotFoundError: pandas` | Run `pip install pandas` |
 
-### Volatility
+---
 
-| Term | Description |
-|---|---|
-| `IV` (Implied Volatility) | Market's expected future volatility |
-| `HV` (Historical Volatility) | Actual past volatility |
-| `IV/RV` | IV vs realized volatility ratio |
+## Reference
 
-### Margin & Leverage
-
-```
-Leverage = Σ(dollarValue) / NetLiquidation
-Margin % = Σ(marginReq) / NetLiquidation × 100
-```
-
-### Max Pain
-
-Maximum pain strike = the price where maximum total option value expires worthless.
-
-```
-# Calculate max pain for NVDA May 1 expiration
-maxpain NVDA 05-01
-```
-
-### OCC Format
-
-`info` and `details` commands require OCC-format option symbols:
-
-```
-SYMBOL + YYMMDD + C|P + 8-DIGIT_STRIKE
-
-Example: NVDA260501C00175000
-  NVDA    → Underlying
-  260501  → May 1, 2026
-  C       → Call
-  00175000 → $175.00 (price × 1000, 8 digits)
-```
-
-For full reference on `info`/`quote` commands, see [`alphameta-market-data`](../alphameta-market-data).
-
-For full reference, see [references/ref-indicators.md](references/ref-indicators.md) and [references/ref-utilities.md](references/ref-utilities.md).
+For the complete Python code and detailed workflow, see [references/technical.md](references/technical.md).
