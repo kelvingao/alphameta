@@ -81,7 +81,7 @@ Route to the specialised sibling skill for the user's specific need. If no skill
 | **Technical analysis**: Greeks, IV/HV, max pain, GEX, k-line patterns | `alphameta-technical` |
 | **Trading**: options strategies, place/modify/cancel orders, multi-leg combos | `alphameta-trading` |
 | **Portfolio**: positions, P&L, balance, margin, risk analysis, hedging, portfolio diagnosis | `alphameta-portfolio` |
-| **Automation**: conditional triggers (price/RSI/EMA), scheduled tasks | `alphameta-automation` |
+| **Automation**: conditional triggers (price/RSI/EMA), scheduled tasks | `alphameta-predicate` |
 | **Quant**: quantitative strategies, factor models | `alphameta-quant` |
 | **Watchlist**: named symbol groups, add/remove symbols, local persistence | `alphameta-watchlist` |
 | **Utilities**: calculator, calendar, TTS, paper trading, market strength reporter | `alphameta-utilities` |

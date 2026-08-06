@@ -48,7 +48,7 @@ Use these category names to filter the search endpoint:
 | `Market Data` | Real-time quotes, option chains, market depth, subscription | `alphameta-market-data` |
 | `Trading` | Place, modify, cancel, preview, fast/scale/evict orders | `alphameta-trading` |
 | `Portfolio` | Positions, P&L, balance, asset distribution | `alphameta-portfolio` |
-| `Automation` | Conditional triggers, scheduled tasks | `alphameta-automation` |
+| `Automation` | Conditional triggers, scheduled tasks | `alphameta-predicate` |
 | `Watchlist` | Watchlist groups, snapshots | `alphameta-watchlist` |
 | `Technical` | Greeks, IV, max pain, gamma exposure | `alphameta-technical` |
 | `Fundamental` | Financial statements, SEC filings, KPIs | `alphameta-fundamental` |

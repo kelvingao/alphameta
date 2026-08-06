@@ -28,10 +28,29 @@ curl "http://localhost:18080/api/v1/search?query=depth"
 
 | Command | Use For |
 |---|---|
-| `quote <symbols...>` | Batch quotes for one or more symbols (slower but no subscription needed) |
+| `quote <symbols...>` | Batch quotes for one or more symbols (slower but no subscription needed); returns bid/ask/last/volume plus IV/HV volatility |
 | `depth <symbol>` | Multi-level BID/ASK order book |
-| `info <symbol>` | Contract metadata with Greeks, IV, ATR |
-| `range <symbol>` | Trading range |
+| `info <symbol>` | Contract metadata with Greeks, IV, ATR (requires `add` first) |
+| `range <symbol>` | Trading range / generate OCC symbols for a price range |
+| `align <symbol>` | Batch add ATM straddle/strangle/spread quotes |
+
+### Brace Expansion
+
+`add` supports brace expansion to subscribe to multiple strikes at once:
+
+```bash
+# Puts: $150, $175, $200 for NVDA 260501
+add NVDA260501P00{150,175,200}000
+```
+
+### `chain` vs `info`
+
+- `chain <SYMBOL> <MM-DD>` returns **strikes only**
+- Use `info` / `quote` with the OCC symbol for contract details (Greeks, IV)
+
+### `add` auto-saves
+
+Each `add` auto-calls `qsnapshot` to persist subscription state across sessions.
 
 ### `quote` vs Real-Time Subscription
 

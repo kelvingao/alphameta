@@ -2,7 +2,7 @@
 name: alphameta-market-data
 description: |
   Live and historical market data for US equities and options via AlphaMeta (IBKR). Real-time quotes, candlestick / OHLCV charts, order book depth, option chains, contract details with Greeks, intraday minute curves, candlestick pattern recognition, and WebSocket subscription management.
-  Triggers: "股价", "行情", "现在多少钱", "多少钱", "K线", "走势", "分时图", "盘口", "深度", "期权链", "行权价", "K线形态", "蜡烛图", "stock price", "quote", "kline", "chart", "depth", "option chain", "intraday", "candlestick pattern", "bid ask", "NVDA", "AAPL", "SPY", "AAPL quote", "NVDA chain"
+  Triggers: "股价", "行情", "现在多少钱", "多少钱", "K线", "走势", "分时图", "盘口", "深度", "期权链", "行权价", "K线形态", "蜡烛图", "stock price", "quote", "kline", "chart", "depth", "option chain", "intraday", "candlestick pattern", "bid ask", "market depth", "NVDA", "AAPL", "SPY", "AAPL quote", "NVDA chain", "SPY IV"
 ---
 
 # AlphaMeta Market Data
@@ -36,13 +36,15 @@ Discover the exact command names and flags at runtime via `/api/v1/search` — d
 
 | Command | Description |
 |---|---|
-| `quote` | Batch real-time quotes for one or more symbols |
+| `quote` | Batch real-time quotes for one or more symbols (with IV/HV) |
 | `depth` | Multi-level BID/ASK order book |
 | `chain` | Option chain strikes for an expiry |
 | `info` | Contract metadata with Greeks, IV, ATR |
-| `range` | Trading range |
-| `add` | Subscribe to a symbol (real-time push) |
+| `range` | Trading range / generate OCC symbols for a price range |
+| `add` | Subscribe to a symbol (real-time push, supports brace expansion) |
 | `remove` | Unsubscribe from a symbol |
+| `oadd` | Add symbols from pending orders to subscriptions |
+| `align` | Batch add ATM straddle/strangle/spread quotes |
 | `kline` | OHLCV candlestick data (latest N / history / intraday) |
 | `prequalify` | Check option prequalification |
 
@@ -76,9 +78,9 @@ All commands in this skill are **public** — no login required. Data is sourced
 alphameta-market-data/
 ├── SKILL.md
 └── references/
-    ├── quote.md              # Real-time quotes, depth, range
+    ├── quote.md              # Real-time quotes, depth, range, align, brace expansion
     ├── kline.md              # Candlestick / OHLCV / intraday
     ├── patterns.md           # Pattern recognition analysis
-    ├── subscriptions.md      # add/remove real-time subscriptions
+    ├── subscriptions.md      # add/remove/oadd real-time subscriptions
     └── option-chain.md       # Option chain, strikes, Greeks
 ```

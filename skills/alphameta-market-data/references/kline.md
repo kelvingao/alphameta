@@ -36,7 +36,10 @@ curl "http://localhost:18080/api/v1/search?query=kline"
 ## Workflow
 
 1. **Resolve symbol** — plain ticker
-2. **Determine mode** — intraday vs history vs latest N
+2. **Determine mode** — intraday vs history vs latest N:
+   - Explicit "intraday" or "today" → intraday mode
+   - Date-like first argument (YYYY-MM-DD, "today", "yesterday") → history mode
+   - Otherwise → latest N candles mode
 3. **Map time windows** — use trading-day counts:
    - "1-week" → `day, 5`
    - "1-month" → `day, 22`
@@ -67,9 +70,46 @@ curl ... -d '{"cmd": "kline NVDA intraday"}'
 
 The API returns `result.bars[]` with fields: `date`, `open`, `high`, `low`, `close`, `volume`, `average`.
 
-**Intraday**: `date` is ISO 8601 datetime; no `adjust` field.
+```json
+{
+  "success": true,
+  "request_id": "req-xxx",
+  "result": {
+    "symbol": "AAPL",
+    "period": "day",
+    "count": 5,
+    "adjust": "none",
+    "bars": [
+      {
+        "date": "2026-05-08",
+        "open": 287.86,
+        "high": 294.76,
+        "low": 287.5,
+        "close": 293.86,
+        "volume": 39300184,
+        "average": 293.118,
+        "barCount": 258450
+      }
+    ]
+  },
+  "execution_time_ms": 2558
+}
+```
 
-Always present as prose:
+Variations by mode:
+- **history**: `result` has `start`, `end` instead of `count`
+- **intraday**: `date` is ISO 8601 datetime (e.g. `2026-05-14T09:30:00`), no `adjust` field
+
+Always present as prose — never raw JSON:
+
+```
+**{Symbol} — {Period} ({N} bars, {date range})**
+Range: ${high} ~ ${low}  |  Close-to-close: ${first_close} → ${last_close} ({sign}{X.Y%})
+Volume: avg {X} shares/day — {volume pattern note}
+Trend: {1-2 sentence summary of price action, key levels, and pattern}
+```
+
+### Examples
 
 ```
 **NVDA — Daily (5 bars, May 6–12)**
@@ -78,13 +118,36 @@ Volume: avg 126M shares/day — elevated throughout
 Trend: Strong uptrend from $196 support, 5 consecutive green candles.
 ```
 
+```
+**NVDA — 1m Intraday (111 bars, May 14)**
+Range: $229.36 ~ $233.22  |  Open: $231.34 → Now: $230.26 (▼ -0.5%)
+Volume: heavy in first 2 minutes (1.4M shares), then tapered to ~10K/min
+Trend: Opened with a spike to $233.22, then gradual selloff through the morning.
+```
+
+**Intraday output** should mention the opening spike/drop, session high/low, and whether volume confirms the trend. For multi-day history, highlight the directional bias, key support/resistance levels, and any volume anomalies.
+
+**Net move** = `(last_close - first_close) / first_close` — always close-to-close, with ▲/▼ direction arrows.
+
+## Common Rationalizations
+
+| Rationalization | Reality |
+|---|---|
+| "`day 30` is roughly one month" | 30 trading bars ≈ 6 calendar weeks. For one calendar month use `day 22` |
+| "Net move = (last open − first open) / first open" | Always use close-to-close: `(last_close − first_close) / first_close` |
+| "I'll pass the raw JSON to the user" | Raw JSON is unreadable. Must translate to prose: range high/low, net change, volume, trend |
+| "Count = calendar days" | Count = number of bars, not days. `day 5` = 5 daily bars covering ~7 calendar days |
+| "Intraday works for any past date" | Intraday mode only supports today. For historical minute data use history mode with `1m` period |
+| "Count is the exact number of bars returned" | Count is a **minimum** — for longer periods (week/month) IBKR may return more bars than requested |
+
 ## Key Behaviours
 
-- **Intraday is today-only** — for historical minute data use history mode with `1m` period
-- **`adj` flag** — split + dividend adjusted prices (volume is never adjusted)
-- **All modes include extended hours** — `useRTH=False` is hardcoded on the backend
+- **Intraday is today-only** — calling intraday on a past date returns empty data. For historical minute bars use `kline <SYMBOL> <START> <END> 1m`
+- **Data availability varies by instrument** — options, some ETFs, and crypto may return empty or very short histories. Verify with `quote` first
+- **All modes include extended hours** — `useRTH=False` is hardcoded on the backend; the command does NOT accept a `useRTH` flag (any `useRTH` token is silently ignored). Mention this if the user expects strict trading-session data
+- **`adj` only affects price fields** — split + dividend adjusted open/high/low/close; volume is never adjusted. Flag syntax only (`--adjust` prefix NOT supported)
 - **Count is a minimum** — IBKR may return more bars than requested for week/month periods
-- **History may include one extra bar** — IBKR includes the bar containing the start timestamp
+- **History may include one extra bar** — IBKR includes the bar containing the start timestamp (e.g. `kline AAPL 2026-05-01 2026-05-07 day` may include a bar dated `2026-04-30`). Always compute the actual date range from the returned data
 
 ## Error Handling
 

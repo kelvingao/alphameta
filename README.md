@@ -56,7 +56,7 @@ Ask your AI assistant naturally (supports 中文 / English):
 | **Technical Analysis** | [`alphameta-technical`](skills/alphameta-technical/SKILL.md) — Greeks, IV/HV, max pain, GEX, k-line patterns |
 | **Trading** | [`alphameta-trading`](skills/alphameta-trading/SKILL.md) — Options strategies, place/modify/cancel orders, multi-leg combos |
 | **Portfolio** | [`alphameta-portfolio`](skills/alphameta-portfolio/SKILL.md) — Positions, P&L, balance, margin, risk analysis, hedging, portfolio diagnosis |
-| **Automation** | [`alphameta-automation`](skills/alphameta-automation/SKILL.md) — Conditional triggers (price/RSI/EMA), scheduled tasks |
+| **Automation** | [`alphameta-predicate`](skills/alphameta-predicate/SKILL.md) — Conditional triggers (price/RSI/EMA), scheduled tasks |
 | **Quant** | [`alphameta-quant`](skills/alphameta-quant/SKILL.md) — Quantitative strategies, factor models |
 | **Watchlist** | [`alphameta-watchlist`](skills/alphameta-watchlist/SKILL.md) — Named symbol groups, add/remove symbols, local persistence |
 | **Utilities** | [`alphameta-utilities`](skills/alphameta-utilities/SKILL.md) — Calculator, calendar, TTS, paper trading, market strength reporter |
