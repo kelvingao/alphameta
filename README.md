@@ -92,3 +92,9 @@ User Query → AI Assistant → AlphaMeta Skills → REST API → IBKR Gateway
 ```
 
 AlphaMeta runs as a local service connecting to IBKR, exposing a clean REST API that your AI assistant can call using natural language.
+
+---
+
+## License
+
+[MIT](LICENSE) © Intelliscale Technologies
