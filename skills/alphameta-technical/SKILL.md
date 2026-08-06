@@ -1,7 +1,6 @@
 ---
 name: alphameta-technical
-description: |
-  Price technical indicators via AlphaMeta — MACD, RSI, KDJ, Bollinger Bands, EMA crossover, ADX, ATR, OBV computed from OHLCV kline data. Use when: "MACD", "RSI", "KDJ", "布林带", "布林", "ADX", "ATR", "OBV", "技术指标", "金叉", "死叉", "超买", "超卖".
+description: 'Price technical indicators via AlphaMeta — MACD, RSI, KDJ, Bollinger Bands, EMA crossover, ADX, ATR, OBV computed from OHLCV kline data. Use when: "MACD", "RSI", "KDJ", "布林带", "布林", "ADX", "ATR", "OBV", "技术指标", "金叉", "死叉", "超买", "超卖".'
 ---
 
 # AlphaMeta Technical

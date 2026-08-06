@@ -1,8 +1,6 @@
 ---
 name: alphameta-watchlist
-description: |
-  Named grouping of symbols (stocks, options, futures) persisted locally via AlphaMeta. Read your watchlist groups, create new groups, add/remove symbols, delete groups. Also set price alerts for symbols. All data is stored locally — no remote state changes, no broker involvement.
-  Triggers: "我的自选股", "自选股有哪些", "我关注的股票", "我的分组", "把 X 加到自选", "添加到自选", "创建分组", "删除自选", "删除分组", "watchlist", "my watchlist", "favorited stocks", "watch groups", "add to watchlist", "remove from watchlist", "create group", "delete group", "rename group", "price alert", "价格提醒", "提醒", "alert", "when price"
+description: 'Named grouping of symbols (stocks, options, futures) persisted locally via AlphaMeta. Read your watchlist groups, create new groups, add/remove symbols, delete groups. Also set price alerts for symbols. All data is stored locally — no remote state changes, no broker involvement. Triggers: "我的自选股", "自选股有哪些", "我关注的股票", "我的分组", "把 X 加到自选", "添加到自选", "创建分组", "删除自选", "删除分组", "watchlist", "my watchlist", "favorited stocks", "watch groups", "add to watchlist", "remove from watchlist", "create group", "delete group", "rename group", "price alert", "价格提醒", "提醒", "alert", "when price"'
 ---
 
 # AlphaMeta Watchlist

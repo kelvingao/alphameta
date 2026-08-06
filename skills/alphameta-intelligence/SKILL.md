@@ -1,8 +1,6 @@
 ---
 name: alphameta-intelligence
-description: |-
-  Market intelligence: strategy screener, popularity rankings, top movers with news correlation, quote anomalies, index/ETF constituent stocks, morning briefings, ETF fund flow, market microstructure, and catalyst monitoring.
-  Triggers: "筛选", "策略筛选", "排行", "热度", "异动", "成分股", "晨报", "早报", "ETF资金流", "screener", "rank", "anomaly", "constituent", "top movers", "morning brief", "ETF flow", "market intelligence", "市场强度", "资金流向", "事件日历", "今天财报", "市场微观结构"
+description: 'Market intelligence: strategy screener, popularity rankings, top movers with news correlation, quote anomalies, index/ETF constituent stocks, morning briefings, ETF fund flow, market microstructure, and catalyst monitoring. Triggers: "筛选", "策略筛选", "排行", "热度", "异动", "成分股", "晨报", "早报", "ETF资金流", "screener", "rank", "anomaly", "constituent", "top movers", "morning brief", "ETF flow", "market intelligence", "市场强度", "资金流向", "事件日历", "今天财报", "市场微观结构"'
 ---
 
 # AlphaMeta Insights

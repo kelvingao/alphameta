@@ -1,8 +1,6 @@
 ---
 name: alphameta-fundamental
-description: |
-  Company fundamentals via AlphaMeta — latest financial KPIs (revenue / net income / EPS / margins), balance sheet health, cash flow trends, full hierarchical financial statements from SEC EDGAR XBRL. Covers income statement, balance sheet, and cash flow statement with multi-period trends.
-  Triggers: "基本面", "业绩", "财报", "财务健康", "盈利能力", "营收", "净利润", "ROE", "毛利率", "fundamentals", "financials", "earnings report", "ROE", "gross margin", "free cash flow", "company report", "资产负债表", "现金流量表", "利润表", "资产负债表", "現金流量表", "利潤表", "financial health", "income statement", "balance sheet", "cash flow", "SEC filings", "XBRL", "finanical KPIs", "revenue", "net income", "EPS".
+description: 'Company fundamentals via AlphaMeta — latest financial KPIs (revenue / net income / EPS / margins), balance sheet health, cash flow trends, full hierarchical financial statements from SEC EDGAR XBRL. Covers income statement, balance sheet, and cash flow statement with multi-period trends. Triggers: "基本面", "业绩", "财报", "财务健康", "盈利能力", "营收", "净利润", "ROE", "毛利率", "fundamentals", "financials", "earnings report", "ROE", "gross margin", "free cash flow", "company report", "资产负债表", "现金流量表", "利润表", "资产负债表", "現金流量表", "利潤表", "financial health", "income statement", "balance sheet", "cash flow", "SEC filings", "XBRL", "finanical KPIs", "revenue", "net income", "EPS".'
 ---
 
 # AlphaMeta Fundamentals

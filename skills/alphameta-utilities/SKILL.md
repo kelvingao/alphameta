@@ -1,7 +1,6 @@
 ---
 name: alphameta-utilities
-description: |
-  AlphaMeta utility commands — economic/earnings/IPO calendar, text-to-speech announcements, calculator, paper trading, and market strength reporter. Use when: "日历", "经济日历", "财报日历", "IPO", "TTS", "语音播报", "计算器", "paper trading", "模拟交易", "reporter", "market strength", "calendar", "calculator", "say", "reconnect".
+description: 'AlphaMeta utility commands — economic/earnings/IPO calendar, text-to-speech announcements, calculator, paper trading, and market strength reporter. Use when: "日历", "经济日历", "财报日历", "IPO", "TTS", "语音播报", "计算器", "paper trading", "模拟交易", "reporter", "market strength", "calendar", "calculator", "say", "reconnect".'
 ---
 
 # AlphaMeta Utilities

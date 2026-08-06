@@ -1,9 +1,6 @@
 ---
 name: alphameta-portfolio
-description: |-
-  Account-level analysis via IBKR (Interactive Brokers) — positions, P&L, balance, margin, leverage ratio, buying power, and execution history. Distinguishes long vs short positions, shows real-time unrealized/realized P&L, and computes account-level leverage ratio.
-
-  Triggers: "查持仓", "账户余额", "保证金率", "杠杆率", "多头", "空头", "盈亏", "账户概览", "账户表现", "持仓明细", "我的仓位", "portfolio diagnosis", "risk analysis", "risk-return optimisation", "efficient frontier", "rebalance", "asset allocation", "performance attribution", "tax-loss harvesting", "positions", "portfolio", "balance", "leverage", "margin", "P&L", "net liquidation", "buying power", "long positions", "short positions", "my account".
+description: 'Account-level analysis via IBKR (Interactive Brokers) — positions, P&L, balance, margin, leverage ratio, buying power, and execution history. Distinguishes long vs short positions, shows real-time unrealized/realized P&L, and computes account-level leverage ratio. Triggers: "查持仓", "账户余额", "保证金率", "杠杆率", "多头", "空头", "盈亏", "账户概览", "账户表现", "持仓明细", "我的仓位", "portfolio diagnosis", "risk analysis", "risk-return optimisation", "efficient frontier", "rebalance", "asset allocation", "performance attribution", "tax-loss harvesting", "positions", "portfolio", "balance", "leverage", "margin", "P&L", "net liquidation", "buying power", "long positions", "short positions", "my account".'
 ---
 
 # AlphaMeta Portfolio

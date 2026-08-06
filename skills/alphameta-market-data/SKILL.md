@@ -1,8 +1,6 @@
 ---
 name: alphameta-market-data
-description: |
-  Live and historical market data for US equities and options via AlphaMeta (IBKR). Real-time quotes, candlestick / OHLCV charts, order book depth, option chains, contract details with Greeks, intraday minute curves, candlestick pattern recognition, and WebSocket subscription management.
-  Triggers: "股价", "行情", "现在多少钱", "多少钱", "K线", "走势", "分时图", "盘口", "深度", "期权链", "行权价", "K线形态", "蜡烛图", "stock price", "quote", "kline", "chart", "depth", "option chain", "intraday", "candlestick pattern", "bid ask", "market depth", "NVDA", "AAPL", "SPY", "AAPL quote", "NVDA chain", "SPY IV"
+description: 'Live and historical market data for US equities and options via AlphaMeta (IBKR). Real-time quotes, candlestick / OHLCV charts, order book depth, option chains, contract details with Greeks, intraday minute curves, candlestick pattern recognition, and WebSocket subscription management. Triggers: "股价", "行情", "现在多少钱", "多少钱", "K线", "走势", "分时图", "盘口", "深度", "期权链", "行权价", "K线形态", "蜡烛图", "stock price", "quote", "kline", "chart", "depth", "option chain", "intraday", "candlestick pattern", "bid ask", "market depth", "NVDA", "AAPL", "SPY", "AAPL quote", "NVDA chain", "SPY IV"'
 ---
 
 # AlphaMeta Market Data

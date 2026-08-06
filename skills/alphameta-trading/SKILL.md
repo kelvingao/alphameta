@@ -1,8 +1,6 @@
 ---
 name: alphameta-trading
-description: |-
-  Place, modify, cancel orders; fast momentum execution, scale-in batching, force-close eviction; multi-leg combo orders (roll, spread, straddle, condor, butterfly) via AlphaMeta (IBKR REST API).
-  Triggers: "下单", "买入", "卖出", "市价单", "限价单", "取消订单", "改单", "对冲", "roll", "spread", "straddle", "butterfly", "condor", "place order", "buy", "sell", "modify order", "cancel order", "options spread", "快速成交", "分批建仓", "强平", "分批减仓", "高速下单", "evict", "fast", "scale", "expand", "limit order", "market order", "iron condor", "垂直价差", "跨式", "蝶式", "备兑开仓", "保护性看跌".
+description: 'Place, modify, cancel orders; fast momentum execution, scale-in batching, force-close eviction; multi-leg combo orders (roll, spread, straddle, condor, butterfly) via AlphaMeta (IBKR REST API). Triggers: "下单", "买入", "卖出", "市价单", "限价单", "取消订单", "改单", "对冲", "roll", "spread", "straddle", "butterfly", "condor", "place order", "buy", "sell", "modify order", "cancel order", "options spread", "快速成交", "分批建仓", "强平", "分批减仓", "高速下单", "evict", "fast", "scale", "expand", "limit order", "market order", "iron condor", "垂直价差", "跨式", "蝶式", "备兑开仓", "保护性看跌".'
 ---
 
 # AlphaMeta Trading

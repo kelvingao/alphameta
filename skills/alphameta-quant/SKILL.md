@@ -1,9 +1,6 @@
 ---
 name: alphameta-quant
-description: |-
-  Quantitative strategy analysis and backtesting via AlphaMeta (IBKR) — cointegration analysis for pairs trading, vectorized backtesting with performance metrics (CAGR, Sharpe, drawdown, win rate, profit factor), entry/exit signals for statistical arbitrage, and quantstats-style reporting.
-
-  Triggers: "量化", "量化策略", "回测", "策略回测", "策略表现", "回测报告", "绩效分析", "配对交易", "协整", "统计套利", "配对", "ADF", "半衰期", "Z值", "价差", "对冲比率", "backtest", "backtesting", "backtest report", "strategy performance", "quant stats", "Sharpe", "drawdown", "CAGR", "win rate", "profit factor", "mean reversion", "pairs trading", "cointegration", "statistical arbitrage", "pair trade", "hedge ratio", "Z-score", "spread", "half-life", "ADF test", "Engle-Granger", "配對交易", "協整", "統計套利", "對沖比率"
+description: 'Quantitative strategy analysis and backtesting via AlphaMeta (IBKR) — cointegration analysis for pairs trading, vectorized backtesting with performance metrics (CAGR, Sharpe, drawdown, win rate, profit factor), entry/exit signals for statistical arbitrage, and quantstats-style reporting. Triggers: "量化", "量化策略", "回测", "策略回测", "策略表现", "回测报告", "绩效分析", "配对交易", "协整", "统计套利", "配对", "ADF", "半衰期", "Z值", "价差", "对冲比率", "backtest", "backtesting", "backtest report", "strategy performance", "quant stats", "Sharpe", "drawdown", "CAGR", "win rate", "profit factor", "mean reversion", "pairs trading", "cointegration", "statistical arbitrage", "pair trade", "hedge ratio", "Z-score", "spread", "half-life", "ADF test", "Engle-Granger", "配對交易", "協整", "統計套利", "對沖比率"'
 ---
 # AlphaMeta Quant
 

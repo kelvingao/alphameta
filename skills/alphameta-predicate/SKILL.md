@@ -1,7 +1,6 @@
 ---
 name: alphameta-predicate
-description: |
-  Conditional trigger automation and scheduled tasks via AlphaMeta — if...then... triggers (RSI, EMA crossover, price threshold), scheduled timed tasks, and async task management. Use when: "条件单", "自动化", "触发", "止损", "EMA", "RSI", "定时任务", "schedule", "自动交易", "predicate", "conditional order", "ifthen", "automation", "when price", "auto-stop".
+description: 'Conditional trigger automation and scheduled tasks via AlphaMeta — if...then... triggers (RSI, EMA crossover, price threshold), scheduled timed tasks, and async task management. Use when: "条件单", "自动化", "触发", "止损", "EMA", "RSI", "定时任务", "schedule", "自动交易", "predicate", "conditional order", "ifthen", "automation", "when price", "auto-stop".'
 ---
 
 # AlphaMeta Predicate
