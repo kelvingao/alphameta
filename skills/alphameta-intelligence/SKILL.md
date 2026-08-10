@@ -86,10 +86,6 @@ US ETF sector rotation signals from capital flow and volume trend analysis acros
 ### Market Microstructure
 Order book depth, bid-ask spread analysis, depth asymmetry, order-flow pressure, and order-wall detection. See [references/market-microstructure.md](references/market-microstructure.md).
 
-## Auth requirements
-
-All CLI commands: Public — no login required.
-
 ## Error handling
 
 | Situation | Response |

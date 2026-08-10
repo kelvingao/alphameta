@@ -46,10 +46,6 @@ Discover the exact command names and flags at runtime via `/api/v1/search` — d
 | `kline` | OHLCV candlestick data (latest N / history / intraday) |
 | `prequalify` | Check option prequalification |
 
-## Auth Requirements
-
-All commands in this skill are **public** — no login required. Data is sourced from IBKR's market data feed.
-
 ## Error Handling
 
 | Situation | Response |

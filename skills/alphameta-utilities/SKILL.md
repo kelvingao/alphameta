@@ -37,23 +37,19 @@ See the [alphameta](../alphameta) skill for server setup and command execution s
 
 Discover exact command names and flags at runtime via `search <keyword>`.
 
-| Command | Description | Auth |
-|---------|-------------|------|
-| `calendar` | Financial calendar (econ/earnings/ipo) | Public |
-| `math` | Calculator (+-*/ sqrt() sin() cos()) | Public |
-| `say` | Text-to-speech | Public |
-| `reporter` | Market strength score report | Public |
-| `paper` | Switch/execute paper trading | Public |
-| `reconnect` | Reconnect IBKR Gateway | Public |
-| `details` | Market data with Greeks (requires subscription) | Public |
-| `maxpain` | Calculate max pain for expiration | Public |
-| `daydumper` | Export historical K-line data | Public |
-| `qualify` | Cache contract eligibility | Public |
-| `clear` | Clear terminal display | Public |
-
-## Auth Requirements
-
-All utility commands are **public** — no login required.
+| Command | Description |
+|---------|-------------|
+| `calendar` | Financial calendar (econ/earnings/ipo) |
+| `math` | Calculator (+-*/ sqrt() sin() cos()) |
+| `say` | Text-to-speech |
+| `reporter` | Market strength score report |
+| `paper` | Switch/execute paper trading |
+| `reconnect` | Reconnect IBKR Gateway |
+| `details` | Market data with Greeks (requires subscription) |
+| `maxpain` | Calculate max pain for expiration |
+| `daydumper` | Export historical K-line data |
+| `qualify` | Cache contract eligibility |
+| `clear` | Clear terminal display |
 
 ## Error Handling
 

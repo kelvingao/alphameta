@@ -123,16 +123,6 @@ sec <symbol> [year] [quarter] [periods]
 ⚠️ 以上数据仅供参考，不构成投资建议。/ 以上數據僅供參考，不構成投資建議。/ For reference only. Not investment advice.
 ```
 
-## Auth Requirements
-
-| Scope | Required |
-|-------|----------|
-| Financial KPIs (`financial-report`) | ✅ Public — no login required (read-only) |
-| Full statements (`financial-statement`) | ✅ Public — no login required (read-only) |
-| Multi-period trends (`sec`) | ✅ Public — no login required (read-only) |
-
-All fundamental data commands are **read-only** and require no special permissions.
-
 ## Error Handling
 
 | Situation | Response |
