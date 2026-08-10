@@ -2,7 +2,7 @@
 
 Persistent named groups of securities (stocks, options, futures, indices), stored locally via AlphaMeta's quote group system.
 
-Data lives in local diskcache — no network required for CRUD. Only live quote lookups need a running AlphaMeta service.
+Data persists in local diskcache (non-monetary local writes — no orders/positions touched). All CRUD goes through the gateway REST endpoint `POST /api/v1/execute`; mutations (`qadd`/`qsave`/`qremove`/`qdelete`/`qclean`) additionally require the IBKR gateway connected (`/api/v1/health` → `ib_connected: true`). `qlist` only needs the HTTP service up.
 
 ## Reading
 

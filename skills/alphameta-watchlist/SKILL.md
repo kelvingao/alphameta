@@ -5,7 +5,7 @@ description: 'Named grouping of symbols (stocks, options, futures) persisted loc
 
 # AlphaMeta Watchlist
 
-Persistent named groups of securities, stored locally via AlphaMeta's quote group system. Also supports price alerts.
+Persistent named groups of securities (stocks, options, futures, indices) via AlphaMeta's quote-group system. Also supports price alerts.
 
 > **Response language**: match the user's input language — English / Simplified Chinese.
 > **RULE: Response language priority**: English is the default when language is ambiguous. If the user input is only a slash command, command name, ticker / symbol, or contains no natural-language language signal, you MUST respond in English. Do not infer Chinese from trigger keywords, skill metadata, or examples.
@@ -21,59 +21,68 @@ Persistent named groups of securities, stored locally via AlphaMeta's quote grou
 - "批量查看自选股行情" / "Watchlist batch check" — get symbols then route to `alphameta-market-data`
 - "当 AAPL 涨到 200 时提醒我" / "Alert me when AAPL goes above 200" — set a price alert
 
-## Sub-topic Routing
+## How to Run Watchlist Commands
 
-| User intent | Load references file |
-|---|---|
-| View / manage watchlist groups | [references/watchlist.md](references/watchlist.md) |
-| Set price alerts | [references/alert.md](references/alert.md) |
-| System groups (client-{id}, global) | [references/system-groups.md](references/system-groups.md) |
+Watchlist commands run on the AlphaMeta gateway. **`alphameta skill`** defines how to start the server, execute commands (`POST /api/v1/execute`), and discover commands (`GET /api/v1/search`). This skill only defines the watchlist-specific commands and semantics below.
 
-## CLI Commands
+## Commands
 
-Discover exact command names and flags at runtime via `search <keyword>`.
+| Command | Description | Gateway |
+|---------|-------------|:-------:|
+| `qlist [group...]` | List all/specific quote groups | no |
+| `qadd <group> <symbol...>` | Append symbols to a group (creates if missing) | yes |
+| `qsave <group> [symbol...]` | Create/replace a group (no symbols → saves live quotes) | yes |
+| `qremove <group> [symbol...]` | Remove symbols (glob ok); bare `qremove <group>` clears | yes |
+| `qdelete <group...>` | Delete entire group(s) — **irreversible** | yes |
+| `alert <sym> >|< <price> [--expire <date>]` | Set a price alert | yes |
+| `qclean <group>` | Remove expired options from a group | yes |
+| `qsnapshot` | Save current subscriptions (auto on restart) | — |
 
-| Command | Description | Auth |
-|---------|-------------|------|
-| `qlist` | List all/specific quote groups | Public |
-| `qadd` | Add symbols to a group | Public |
-| `qsave` | Create/replace a group | Public |
-| `qremove` | Remove symbols from group | Public |
-| `qdelete` | Delete entire group(s) | Public |
-| `alert` | Set price/condition alerts | Public |
-| `qsnapshot` | Save current subscriptions (auto on restart) | Public |
-| `qclean` | Remove expired options from group | Public |
+`Gateway` column: "yes" means the command needs the IBKR gateway connected (server health `ib_connected: true`); `qlist` only needs the HTTP service up.
 
 ## Auth Requirements
 
-All watchlist and alert commands are **public** — no login required. Data persists in local diskcache.
+All watchlist/alert commands require a **PRO-tier API key** on a running AlphaMeta gateway (key setup: `alphameta` skill → `references/setup.md`). A `403` means the key/plan is insufficient — respond per the Error Handling table below. Data persists in local diskcache — **non-monetary local writes**: no orders, positions, or broker state are touched.
 
 ## ⚠️ Mutating Protocol
 
-- Watchlist mutations (qadd/qsave/qremove) are **local writes** — execute immediately after describing.
-- `qdelete` is irreversible — **briefly confirm** before executing.
-- Price alerts (`alert` command) are server-side but non-monetary — describe the intent, then execute.
+- Watchlist mutations (`qadd`/`qsave`/`qremove`) are non-monetary local writes — **describe, then execute immediately** (no confirmation gate).
+- `qdelete` is **irreversible** — **briefly confirm** before executing.
+- Price alerts (`alert`) are server-side but non-monetary — describe the intent, then execute.
+- All mutations need the gateway + broker link (`ib_connected: true`); if the link is down, say so and do not retry blindly.
 
 ## Error Handling
 
 | Situation | Response |
 |-----------|----------|
-| Service not running | Start the service: `alphameta --ibkr` |
-| `qlist` returns empty | "No watchlist groups yet. Create one with `qadd <name> <symbols>`." |
+| Connection refused (gateway down) | Start the service per the `alphameta` skill (`references/setup.md`), then retry. |
+| HTTP ok but `ib_connected: false` | Reads work; mutations will fail. Inform the user the broker link is down. |
+| `qlist` returns empty groups | "No watchlist groups yet. Create one with `qadd <name> <symbols>`." |
 | `qadd` returns `failed: [...]` | "Could not qualify: AAPL. Check symbol spelling." |
 | `qdelete` on non-existent group | "Group not found. Run `qlist` to see available groups." |
-| Permission error (403) | "This command requires a PRO-tier API key." |
+| `qremove` no matching symbols | "No matching symbols found in that group. Use `qlist <group>` to check contents." |
+| Permission error (403) | "This command requires a PRO-tier API key (set `ALPHAMETA_API_KEY`)." |
 | Other API error | Surface the error message verbatim. |
+
+## Sub-topic Routing
+
+Reference files live in the same directory as `SKILL.md` (`references/`). Load the relevant one for details:
+
+| User intent | Load references file |
+|---|---|
+| View / manage watchlist groups (output format, command semantics) | `references/watchlist.md` |
+| Set price alerts | `references/alert.md` |
+| System groups (`client-{id}`, `global`) — red flags | `references/system-groups.md` |
 
 ## Related Skills
 
 | User wants | Use |
 |---|---|
+| Command execution / discovery / server setup (base) | `alphameta` |
 | Live quotes for watchlist symbols | `alphameta-market-data` |
 | Greeks / IV for watchlist options | `alphameta-technical` |
 | Portfolio positions for watchlist symbols | `alphameta-portfolio` |
 | Conditional triggers (RSI, EMA, scheduled) | `alphameta-predicate` |
-| Server setup and CLI reference | `alphameta` |
 
 ## File Layout
 
