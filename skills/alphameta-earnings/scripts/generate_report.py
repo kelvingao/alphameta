@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Earnings Update Report Generator
 =================================
@@ -18,7 +19,7 @@ Usage (by LLM after collecting CLI data):
 
 from __future__ import annotations
 
-import io, os, tempfile
+import argparse, inspect, io, os, tempfile
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -425,3 +426,82 @@ class DocxBuilder:
     def save(self) -> str:
         self.doc.save(self.output_path)
         return self.output_path
+
+
+# ═══════════════════════════════════════════════════════════
+#  CLI ENTRY (run_script friendly: --help / --check-deps / --list-charts)
+# ═══════════════════════════════════════════════════════════
+
+_CHART_FUNCS = [
+    quarterly_bar, growth_lines, grouped_bar, pie_pair,
+    scenario_hbar, peer_multiples, price_action, analyst_pt_hbar,
+]
+
+_HELP_EPILOG = f"""
+Available chart functions (all return a PNG file path):
+
+{chr(10).join(f"  {f.__name__}{inspect.signature(f)}" for f in _CHART_FUNCS)}
+
+DocxBuilder methods:
+  cover() / toc(sections) / section(text) / subsection(text) / body(text)
+  bullet(text) / qa(question, answer, watch) / table(headers, rows, col_widths)
+  image(path, width=6.0, caption="") / disclaimer() / save() -> str
+
+Library usage (import as a module):
+  from generate_report import DocxBuilder, ChartBuilder, analyst_pt_hbar
+  cb = ChartBuilder()
+  b = DocxBuilder(symbol="AAPL.US", company="Apple Inc.", report_date="2026-02-05",
+                  analysis_date="2026-02-05", price="$125.00", market_cap="$2.0B",
+                  valuation="12.5x P/E", rating="Buy", output_path="report.docx")
+  b.cover(); b.section("1. Results Summary"); b.table(headers, rows)
+  b.image(cb.quarterly_bar(...)); b.disclaimer(); b.save()
+"""
+
+
+def _check_deps() -> int:
+    missing = []
+    for name in ("docx", "matplotlib", "numpy"):
+        try:
+            __import__(name)
+        except ImportError:
+            missing.append(name)
+    if missing:
+        print(f"MISSING: {', '.join(missing)}")
+        return 1
+    print("deps OK: python-docx, matplotlib, numpy")
+    return 0
+
+
+def _list_charts() -> None:
+    for f in _CHART_FUNCS:
+        print(f"{f.__name__}{inspect.signature(f)}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        prog="generate_report.py",
+        description=__doc__,
+        epilog=_HELP_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--check-deps", action="store_true",
+        help="Verify required third-party dependencies (python-docx, matplotlib, numpy) and exit.",
+    )
+    parser.add_argument(
+        "--list-charts", action="store_true",
+        help="List available chart function signatures and exit.",
+    )
+    args = parser.parse_args()
+
+    if args.check_deps:
+        return _check_deps()
+    if args.list_charts:
+        _list_charts()
+        return 0
+    parser.print_help()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
